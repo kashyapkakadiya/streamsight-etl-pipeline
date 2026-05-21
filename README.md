@@ -36,18 +36,31 @@ CSV File → extract.py → transform.py → load.py → PostgreSQL 15
 
 ```
 streamsight-etl-pipeline/
+
 ├── dags/
+
 │   └── spotify_etl_dag.py       # Airflow DAG definition
+
 ├── logs/                        # Airflow task logs (git-ignored)
+
 ├── data/                        # CSV dataset (git-ignored)
+
 ├── extract.py                   # reads CSV into DataFrame
+
 ├── transform.py                 # cleans and standardizes data
+
 ├── load.py                      # loads into PostgreSQL
+
 ├── pipeline.py                  # manual pipeline runner (no Airflow)
+
 ├── queries.sql                  # SQL analytics queries
+
 ├── docker-compose.yml           # spins up Airflow + PostgreSQL
+
 ├── Dockerfile                   # ETL app container
+
 ├── .env.example                 # template for environment variables
+
 └── requirements.txt
 ```
 
