@@ -1,7 +1,7 @@
 ```markdown
-# StreamSight ETL Pipeline
+# StreamSight ELT Pipeline
 
-An end-to-end, Airflow-orchestrated ETL pipeline that ingests, transforms,
+An end-to-end, Airflow-orchestrated ELT pipeline that ingests, transforms,
 and loads the "Most Streamed Spotify Songs 2024" dataset into a PostgreSQL
 database for SQL-based analytics — fully containerized with Docker.
 
@@ -35,11 +35,11 @@ CSV File → extract.py → transform.py → load.py → PostgreSQL 15
 ## Project Structure
 
 ```
-streamsight-etl-pipeline/
+streamsight-elt-pipeline/
 
 ├── dags/
 
-│   └── spotify_etl_dag.py       # Airflow DAG definition
+│   └── spotify_elt_dag.py       # Airflow DAG definition
 
 ├── logs/                        # Airflow task logs (git-ignored)
 
@@ -57,7 +57,7 @@ streamsight-etl-pipeline/
 
 ├── docker-compose.yml           # spins up Airflow + PostgreSQL
 
-├── Dockerfile                   # ETL app container
+├── Dockerfile                   # ELT app container
 
 ├── .env.example                 # template for environment variables
 
@@ -66,7 +66,7 @@ streamsight-etl-pipeline/
 
 ## DAG Overview
 
-The Airflow DAG `spotify_etl_pipeline` runs on a `@daily` schedule with
+The Airflow DAG `spotify_elt_pipeline` runs on a `@daily` schedule with
 3 automatic retries (2-minute delay) on any task failure.
 
 ```
@@ -80,7 +80,7 @@ extract_task → transform_task → load_task → verify_task
 | load_task | PythonOperator | Loads cleaned data into PostgreSQL in batches |
 | verify_task | PythonOperator | Queries row count post-load as a data quality gate |
 
-## ETL Stages
+## ELT Stages
 
 ### Extract
 Reads the raw CSV (4,600 records) into a pandas DataFrame.
@@ -114,8 +114,8 @@ Raises an error and marks the DAG run as failed if 0 rows are found.
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/kashyapkakadiya/streamsight-etl-pipeline.git
-cd streamsight-etl-pipeline
+git clone https://github.com/kashyapkakadiya/streamsight-elt-pipeline.git
+cd streamsight-elt-pipeline
 
 # 2. Create your .env file
 cp .env.example .env
@@ -140,7 +140,7 @@ http://localhost:8080
 ```
 Login with `admin` / `admin`.
 
-Enable the `spotify_etl_pipeline` DAG and trigger it manually
+Enable the `spotify_elt_pipeline` DAG and trigger it manually
 using the ▶ button, or let it run on its daily schedule.
 
 ### Connect to the database
@@ -206,7 +206,7 @@ Create a `.env` file in the root (use `.env.example` as template):
 ```
 POSTGRES_USER=your_username
 POSTGRES_PASSWORD=your_password
-POSTGRES_DB=spotify_etl
+POSTGRES_DB=spotify_elt
 POSTGRES_HOST=postgres
 POSTGRES_PORT=5432
 AIRFLOW_UID=50000
