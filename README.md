@@ -1,6 +1,7 @@
-# StreamSight ELT Pipeline
+```markdown
+# StreamSight ETL Pipeline
 
-An end-to-end, Airflow-orchestrated ELT pipeline that ingests, transforms,
+An end-to-end, Airflow-orchestrated ETL pipeline that ingests, transforms,
 and loads the "Most Streamed Spotify Songs 2024" dataset into a PostgreSQL
 database for SQL-based analytics — fully containerized with Docker.
 
@@ -17,53 +18,42 @@ database for SQL-based analytics — fully containerized with Docker.
 
 ## Architecture
 
+```
 CSV File → extract.py → transform.py → load.py → PostgreSQL 15
-
-↓
-
-Airflow DAG (scheduled @daily)
-
-extract_task → transform_task → load_task → verify_task
-
-↓
-
-queries.sql
+                                                       ↓
+                                 Airflow DAG (scheduled @daily)
+                          extract_task → transform_task → load_task → verify_task
+                                                                           ↓
+                                                                     queries.sql
+```
 
 ## Project Structure
 
-streamsight-elt-pipeline/
-
+```
+streamsight-etl-pipeline/
 ├── dags/
-
-│   └── spotify_elt_dag.py       # Airflow DAG definition
-
+│   └── spotify_etl_dag.py       # Airflow DAG definition
 ├── logs/                        # Airflow task logs (git-ignored)
-
 ├── data/                        # CSV dataset (git-ignored)
-
 ├── extract.py                   # reads CSV into DataFrame
-
 ├── transform.py                 # cleans and standardizes data
-
 ├── load.py                      # loads into PostgreSQL
-
 ├── pipeline.py                  # manual pipeline runner (no Airflow)
-
 ├── queries.sql                  # SQL analytics queries
-
 ├── docker-compose.yml           # spins up Airflow + PostgreSQL
-
-├── Dockerfile                   # ELT app container
-
+├── Dockerfile                   # ETL app container
 ├── .env.example                 # template for environment variables
-
 └── requirements.txt
+```
 
 ## DAG Overview
 
-The Airflow DAG `spotify_elt_pipeline` runs on a `@daily` schedule with 3 automatic retries (2-minute delay) on any task failure.
+The Airflow DAG `spotify_etl_pipeline` runs on a `@daily` schedule with
+3 automatic retries (2-minute delay) on any task failure.
 
+```
 extract_task → transform_task → load_task → verify_task
+```
 
 | Task | Operator | Description |
 |---|---|---|
@@ -72,7 +62,7 @@ extract_task → transform_task → load_task → verify_task
 | load_task | PythonOperator | Loads cleaned data into PostgreSQL in batches |
 | verify_task | PythonOperator | Queries row count post-load as a data quality gate |
 
-## ELT Stages
+## ETL Stages
 
 ### Extract
 Reads the raw CSV (4,600 records) into a pandas DataFrame.
@@ -106,8 +96,8 @@ Raises an error and marks the DAG run as failed if 0 rows are found.
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/kashyapkakadiya/streamsight-elt-pipeline.git
-cd streamsight-elt-pipeline
+git clone https://github.com/kashyapkakadiya/streamsight-etl-pipeline.git
+cd streamsight-etl-pipeline
 
 # 2. Create your .env file
 cp .env.example .env
@@ -127,12 +117,12 @@ docker-compose up
 ### Access the Airflow UI
 
 Open your browser at:
-
+```
 http://localhost:8080
-
+```
 Login with `admin` / `admin`.
 
-Enable the `spotify_elt_pipeline` DAG and trigger it manually
+Enable the `spotify_etl_pipeline` DAG and trigger it manually
 using the ▶ button, or let it run on its daily schedule.
 
 ### Connect to the database
@@ -195,17 +185,14 @@ LIMIT 10;
 
 Create a `.env` file in the root (use `.env.example` as template):
 
+```
 POSTGRES_USER=your_username
-
 POSTGRES_PASSWORD=your_password
-
-POSTGRES_DB=spotify_elt
-
+POSTGRES_DB=spotify_etl
 POSTGRES_HOST=postgres
-
 POSTGRES_PORT=5432
-
 AIRFLOW_UID=50000
+```
 
 Never commit your `.env` file — it is listed in `.gitignore`.
 
@@ -213,3 +200,4 @@ Never commit your `.env` file — it is listed in `.gitignore`.
 
 Source: [Most Streamed Spotify Songs 2024](https://www.kaggle.com/datasets/nelgiriyewithana/most-streamed-spotify-songs-2024)
 Records: 4,600 | Size: 1.05 MB
+```
