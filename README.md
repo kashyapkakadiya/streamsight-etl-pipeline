@@ -20,10 +20,15 @@ database for SQL-based analytics — fully containerized with Docker.
 
 ```
 CSV File → extract.py → transform.py → load.py → PostgreSQL 15
+
                                                        ↓
+                                                       
                                  Airflow DAG (scheduled @daily)
+                                 
                           extract_task → transform_task → load_task → verify_task
+                          
                                                                            ↓
+                                                                           
                                                                      queries.sql
 ```
 
