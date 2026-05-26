@@ -1,4 +1,3 @@
-```markdown
 # StreamSight ELT Pipeline
 
 An end-to-end, Airflow-orchestrated ELT pipeline that ingests, transforms,
@@ -20,15 +19,11 @@ database for SQL-based analytics — fully containerized with Docker.
 
 ```
 CSV File → extract.py → transform.py → load.py → PostgreSQL 15
-
                                                        ↓
-                                                       
                                  Airflow DAG (scheduled @daily)
                                  
                           extract_task → transform_task → load_task → verify_task
-                          
-                                                                           ↓
-                                                                           
+                                                                           ↓                              
                                                                      queries.sql
 ```
 
@@ -36,31 +31,18 @@ CSV File → extract.py → transform.py → load.py → PostgreSQL 15
 
 ```
 streamsight-elt-pipeline/
-
 ├── dags/
-
 │   └── spotify_elt_dag.py       # Airflow DAG definition
-
 ├── logs/                        # Airflow task logs (git-ignored)
-
 ├── data/                        # CSV dataset (git-ignored)
-
 ├── extract.py                   # reads CSV into DataFrame
-
 ├── transform.py                 # cleans and standardizes data
-
 ├── load.py                      # loads into PostgreSQL
-
 ├── pipeline.py                  # manual pipeline runner (no Airflow)
-
 ├── queries.sql                  # SQL analytics queries
-
 ├── docker-compose.yml           # spins up Airflow + PostgreSQL
-
 ├── Dockerfile                   # ELT app container
-
 ├── .env.example                 # template for environment variables
-
 └── requirements.txt
 ```
 
@@ -218,4 +200,3 @@ Never commit your `.env` file — it is listed in `.gitignore`.
 
 Source: [Most Streamed Spotify Songs 2024](https://www.kaggle.com/datasets/nelgiriyewithana/most-streamed-spotify-songs-2024)
 Records: 4,600 | Size: 1.05 MB
-```
