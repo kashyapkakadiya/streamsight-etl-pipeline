@@ -51,17 +51,17 @@ def run_load(**context):
     clean_json = context['ti'].xcom_pull(key='clean_data', task_ids='transform_task')
     df_clean = pd.read_json(clean_json)
 
-    # Create spotify_elt database if it doesn't exist
+    # Create spotify_etl database if it doesn't exist
     hook = PostgresHook(postgres_conn_id='postgres_default')
     conn = hook.get_conn()
     conn.autocommit = True
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT 1 FROM pg_database WHERE datname = 'spotify_elt'
+        SELECT 1 FROM pg_database WHERE datname = 'spotify_etl'
     """)
     if not cursor.fetchone():
-        cursor.execute("CREATE DATABASE spotify_elt;")
-        print("[DAG] Created database: spotify_elt")
+        cursor.execute("CREATE DATABASE spotify_etl;")
+        print("[DAG] Created database: spotify_etl")
     cursor.close()
     conn.close()
 
@@ -86,13 +86,13 @@ def run_verify(**context):
 # DAG DEFINITION
 # ──────────────────────────────────────────
 with DAG(
-    dag_id='spotify_elt_pipeline',
+    dag_id='spotify_etl_pipeline',
     default_args=default_args,
-    description='ELT pipeline for Spotify Songs 2024 dataset',
+    description='ETL pipeline for Spotify Songs 2024 dataset',
     schedule_interval='@daily',
     start_date=datetime(2026, 1, 1),
     catchup=False,
-    tags=['spotify', 'elt', 'postgresql'],
+    tags=['spotify', 'etl', 'postgresql'],
 ) as dag:
 
     extract_task = PythonOperator(
