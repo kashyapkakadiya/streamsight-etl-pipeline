@@ -100,14 +100,14 @@ with DAG(
         python_callable=run_extract,
     )
 
-    transform_task = PythonOperator(
-        task_id='transform_task',
-        python_callable=run_transform,
-    )
-
     load_task = PythonOperator(
         task_id='load_task',
         python_callable=run_load,
+    )
+
+    transform_task = PythonOperator(
+        task_id='transform_task',
+        python_callable=run_transform,
     )
 
     verify_task = PythonOperator(
@@ -116,4 +116,4 @@ with DAG(
     )
 
     # Task dependency chain
-    extract_task >> transform_task >> load_task >> verify_task
+    extract_task >> load_task >> transform_task >> verify_task
